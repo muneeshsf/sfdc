@@ -26,8 +26,8 @@ trigger PositionSharingTrigger on Position__c (after insert, after update) {
 	
 	//Loop through records that in the trigger and:
 	for(Position__c pos : Trigger.new) {
-		Position__c oldPos = Trigger.oldMap.get(pos.Id);
-		boolean isUpdate = oldPos != null;
+		boolean isUpdate = Trigger.oldMap != null;
+		Position__c oldPos = isUpdate ? Trigger.oldMap.get(pos.Id) : null;
 		// if this an update,
 		// if hiring manager changed
 		if(isUpdate && oldPos.Hiring_Manager__c != pos.Hiring_Manager__c) {
