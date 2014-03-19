@@ -9,6 +9,10 @@
         <value>Candidates</value>
     </caseValues>
     <fields>
+        <label><!-- Address Error --></label>
+        <name>Address_Error__c</name>
+    </fields>
+    <fields>
         <label><!-- Batch Load Item --></label>
         <name>Batch_Load_Item__c</name>
     </fields>
@@ -141,6 +145,14 @@
         <name>US_Citizen__c</name>
     </fields>
     <fields>
+        <label><!-- Unique Key --></label>
+        <name>Unique_Key__c</name>
+    </fields>
+    <fields>
+        <label><!-- Valid Address --></label>
+        <name>Valid_Address__c</name>
+    </fields>
+    <fields>
         <label><!-- Visa Required --></label>
         <name>Visa_Required__c</name>
     </fields>
@@ -161,6 +173,10 @@
         <sections>
             <label><!-- Batch Load Parameters --></label>
             <section>Batch Load Parameters</section>
+        </sections>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
         </sections>
         <sections>
             <label><!-- Employment Information --></label>
