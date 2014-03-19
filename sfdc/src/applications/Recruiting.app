@@ -19,4 +19,6 @@
     <tab>Position_Approval_Matrix__c</tab>
     <tab>Programming_Language__c</tab>
     <tab>Position_Programming_Language__c</tab>
+    <tab>Employee_Referral</tab>
+    <tab>Error_Log__c</tab>
 </CustomApplication>

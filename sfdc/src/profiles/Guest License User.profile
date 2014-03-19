@@ -6,6 +6,10 @@
         <visible>false</visible>
     </applicationVisibilities>
     <classAccesses>
+        <apexClass>CandidateKeyWebService</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>HelloWorldPositionClass</apexClass>
         <enabled>false</enabled>
     </classAccesses>
@@ -19,6 +23,10 @@
     </classAccesses>
     <classAccesses>
         <apexClass>SubscriptionsClass</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>ValidateAddressSOAP</apexClass>
         <enabled>false</enabled>
     </classAccesses>
     <fieldPermissions>
@@ -378,6 +386,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>Candidate__c.Address_Error__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Candidate__c.Batch_Load_Item__c</field>
         <readable>false</readable>
     </fieldPermissions>
@@ -495,6 +508,16 @@
         <editable>true</editable>
         <field>Candidate__c.US_Citizen__c</field>
         <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Candidate__c.Unique_Key__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Candidate__c.Valid_Address__c</field>
+        <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
@@ -810,6 +833,11 @@
         <editable>true</editable>
         <field>Contract.StartDate</field>
         <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Error_Log__c.Trace__c</field>
+        <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
@@ -1632,6 +1660,9 @@
         <layout>Contract-Contract Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
+        <layout>Error_Log__c-Error Log Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
         <layout>Event-Event Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
@@ -1722,6 +1753,10 @@
         <object>Idea</object>
         <viewAllRecords>false</viewAllRecords>
     </objectPermissions>
+    <pageAccesses>
+        <apexPage>EmployeeReferral</apexPage>
+        <enabled>false</enabled>
+    </pageAccesses>
     <recordTypeVisibilities>
         <default>false</default>
         <recordType>Idea.InternalIdeasIdeaRecordType</recordType>

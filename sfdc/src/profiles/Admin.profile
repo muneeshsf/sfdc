@@ -6,6 +6,10 @@
         <visible>true</visible>
     </applicationVisibilities>
     <classAccesses>
+        <apexClass>CandidateKeyWebService</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>HelloWorldPositionClass</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -19,6 +23,10 @@
     </classAccesses>
     <classAccesses>
         <apexClass>SubscriptionsClass</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>ValidateAddressSOAP</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <fieldPermissions>
@@ -377,6 +385,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>Candidate__c.Address_Error__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>Candidate__c.Batch_Load_Item__c</field>
         <readable>true</readable>
@@ -494,6 +507,16 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Candidate__c.US_Citizen__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Candidate__c.Unique_Key__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Candidate__c.Valid_Address__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -809,6 +832,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Contract.StartDate</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Error_Log__c.Trace__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1632,6 +1660,9 @@
         <layout>Contract-Contract Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
+        <layout>Error_Log__c-Error Log Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
         <layout>Event-Event Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
@@ -1787,6 +1818,15 @@
         <allowRead>true</allowRead>
         <modifyAllRecords>true</modifyAllRecords>
         <object>Contract</object>
+        <viewAllRecords>true</viewAllRecords>
+    </objectPermissions>
+    <objectPermissions>
+        <allowCreate>true</allowCreate>
+        <allowDelete>true</allowDelete>
+        <allowEdit>true</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>true</modifyAllRecords>
+        <object>Error_Log__c</object>
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
     <objectPermissions>
@@ -1951,6 +1991,10 @@
         <object>Zip_Code__c</object>
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
+    <pageAccesses>
+        <apexPage>EmployeeReferral</apexPage>
+        <enabled>true</enabled>
+    </pageAccesses>
     <recordTypeVisibilities>
         <default>false</default>
         <recordType>Idea.InternalIdeasIdeaRecordType</recordType>
@@ -1979,6 +2023,14 @@
     </recordTypeVisibilities>
     <tabVisibilities>
         <tab>Candidate__c</tab>
+        <visibility>DefaultOn</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>Employee_Referral</tab>
+        <visibility>DefaultOn</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>Error_Log__c</tab>
         <visibility>DefaultOn</visibility>
     </tabVisibilities>
     <tabVisibilities>

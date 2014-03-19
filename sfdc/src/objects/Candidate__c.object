@@ -51,6 +51,17 @@
     <enableHistory>true</enableHistory>
     <enableReports>true</enableReports>
     <fields>
+        <fullName>Address_Error__c</fullName>
+        <externalId>false</externalId>
+        <label>Address Error</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Batch_Load_Item__c</fullName>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
@@ -337,6 +348,27 @@
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>US Citizen</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Unique_Key__c</fullName>
+        <externalId>false</externalId>
+        <formula>LOWER( Last_Name__c  &amp;  Email__c )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Unique Key</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Valid_Address__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Valid Address</label>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
