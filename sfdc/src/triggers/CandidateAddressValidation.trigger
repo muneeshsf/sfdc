@@ -33,7 +33,8 @@ trigger CandidateAddressValidation on Candidate__c (before insert, after insert,
         // Call asynchronous method to validate addresses.
         if ((trigger.isAfter) && (ids.size() > 0)) {
             // Call the validateAddressSOAP method on the variable "ids"
-        	ValidateAddress.validateAddressSOAP(ids);			
+        	//ValidateAddress.validateAddressSOAP(ids);
+        	ValidateAddress.validateAddressREST(ids);			
          }
     }
 }
