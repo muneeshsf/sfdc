@@ -83,7 +83,7 @@
         <label>Address Information</label>
         <layoutColumns>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Readonly</behavior>
                 <field>Address_Error__c</field>
             </layoutItems>
             <layoutItems>
