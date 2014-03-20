@@ -1,5 +1,5 @@
 global class CandidateEmailHandler implements Messaging.InboundEmailHandler {
-	
+
     global Messaging.InboundEmailResult handleInboundEmail(Messaging.InboundEmail email, Messaging.InboundEnvelope envelope) {
         // declare the result variable
         Messaging.InboundEmailResult result = new Messaging.InboundEmailresult();
@@ -44,12 +44,11 @@ global class CandidateEmailHandler implements Messaging.InboundEmailHandler {
                 }
                 // continue on...don't throw an error nor return result...we've handled the error we were expecting
             }
-            
-	    	// use the fieldMap to set the candidate record field values to those that came in the email: first name, last name, phone, and email
-            candidate.First_Name__c = fieldMap.get('firstname');
-            candidate.Last_Name__c = fieldMap.get('lastname');
-            candidate.Phone__c = fieldMap.get('phone');
-            candidate.Email__c = email.fromAddress;
+            // update or insert the field values that came in the email
+            candidate.first_name__c = fieldMap.containsKey('firstname') ? EncodingUtil.urlDecode(fieldMap.get('firstname'),'UTF-8') : null;
+            candidate.last_name__c = fieldMap.containsKey('lastname') ? EncodingUtil.urlDecode(fieldMap.get('lastname'),'UTF-8') : null;
+            candidate.phone__c = fieldMap.containsKey('phone') ? EncodingUtil.urlDecode(fieldMap.get('phone'),'UTF-8') : null;
+            candidate.email__c = email.fromAddress;
             
             try{
                 if (candidate.id == null) {
@@ -84,39 +83,28 @@ global class CandidateEmailHandler implements Messaging.InboundEmailHandler {
                     return result;
                 }
             }
-			System.debug('candidate id: ');
-			System.debug(candidate.Id);
             
             // create a new attachment
             //  attachment may be text or binary
-	    List<Attachment> attachments = new List<Attachment>();
-	    
-	    if(email.binaryAttachments != null) {
- 	    // loop through any binary or text attachments that came in on the email and add them to the List variable named "attachments" that was declared for you in the line above   
-		for (Messaging.InboundEmail.BinaryAttachment ea : email.binaryAttachments) {
-			Attachment a = new Attachment();
-			a.Name = ea.fileName;
-			a.Body = ea.body;
-			a.ContentType = ea.mimeTypeSubType;
-			a.ParentId = candidate.Id;
-			attachments.add(a);
-		}
-	    }
-		
-		if(email.textAttachments != null) {
-		for (Messaging.InboundEmail.TextAttachment ea : email.textAttachments) {
-			Attachment a = new Attachment();
-			a.Name = ea.fileName;
-			String body = ea.body; 
-			if(ea.bodyIsTruncated && body != null) {
-				body += ' (cont\'d)';
-			}
-			a.body = Blob.valueOf(body);
-			a.ContentType = ea.mimeTypeSubType;
-			a.ParentId = candidate.Id;
-			attachments.add(a);
-		}	
-		}
+            List<Attachment> attachments = new List<Attachment>();
+            if (email.binaryAttachments != null){
+                for (Messaging.InboundEmail.BinaryAttachment emailAttachment:email.binaryAttachments){
+                    Attachment attachment = new Attachment();
+                    attachment.parentId = candidate.id;
+                    attachment.body = emailAttachment.body;
+                    attachment.name = emailAttachment.fileName; 
+                    attachments.add(attachment);
+                }
+            }
+            if (email.textAttachments != null){
+                for (Messaging.InboundEmail.TextAttachment emailAttachment:email.textAttachments){
+                    Attachment attachment = new Attachment();
+                    attachment.parentId = candidate.id;
+                    attachment.body = blob.valueOf(emailAttachment.body);
+                    attachment.name = emailAttachment.fileName; 
+                    attachments.add(attachment);
+                }
+            }
             // insert the attachments
             if (attachments.size() > 0){
                 try{
@@ -129,6 +117,45 @@ global class CandidateEmailHandler implements Messaging.InboundEmailHandler {
                     return result;
                 }    
             }
+            
+            // Now send an email acknowledgement to the fromAddress
+            // Reference the page, pass in a parameter to force PDF
+		    // PageReference templatePage =  Page.CandidateEmailResponseTemplate;
+		    // templatePage.getParameters().put('id',candidate.id); 
+		    // templatePage.setRedirect(true);
+		    // Grab the Page content as our "template"! 
+		    // String htmlBody = templatePage.getContent().toString();
+			String htmlBody = buildOutboundEmailBody(candidate.first_name__c);
+			
+		    // Create an outbound email
+		    Messaging.SingleEmailMessage emailOut = new Messaging.SingleEmailMessage(); 
+		    emailOut.setSubject('Thank You for Your Email');
+
+		    // Add the address that the inbound email came from to the ToAddresses of the outbound email
+		    emailOut.setToAddresses(new String[] {email.fromAddress});
+
+		    emailOut.setHtmlBody(htmlBody);
+		    
+		    try{
+				// write the line that sends the outbound email and returns the email results
+				List<Messaging.SendEmailResult> results = Messaging.sendEmail(new Messaging.Email[] {emailOut});
+				// process the results
+				// loop through the mail results and write any errors to the Error_Log__c object in the trace__c field
+				for (Messaging.SendEmailResult ser : results) {
+					for (Messaging.SendEmailError err : ser.getErrors()) {
+						Error_Log__c log = new Error_Log__c();
+						log.Trace__c = err.getStatusCode() + ': ' + err.getMessage();
+					}
+				}    	
+		    } catch (Exception e){
+		    	Error_Log__c log = new Error_Log__c();
+	            log.trace__c = e.getTypeName() + '\n' + e.getCause() + '\n' + e.getMessage() + '\n\nfieldMap=' + fieldMap + '\n\nmyErr=' + myErr;
+	            insert log;
+	            
+	            // the inbound processing is still considered a success if the outbound email fails
+                result.success = true;
+                return result;
+		    }
         } catch (Exception e){
             Error_Log__c log = new Error_Log__c();
             log.trace__c = e.getTypeName() + '\n' + e.getCause() + '\n' + e.getMessage() + '\n\nmyErr=' + myErr;
@@ -140,5 +167,21 @@ global class CandidateEmailHandler implements Messaging.InboundEmailHandler {
         }
          
         return result;
+    }
+    
+    private String buildOutboundEmailBody(String candidateName){
+    	// since the vforce html templates aren't working...
+    	//	build the html here...when the bug is fixed we'll
+    	//	swap out this method for the correct way
+    	String body = '<html><body><center><h1>';
+    	body += UserInfo.getOrganizationName() + '</h1></center><p>';
+		body += 'Dear ' + candidateName + ',</p><p>';
+		body += 'Thank you for your interest in Universal Containers.  Your email has been received and a recruiter will evaluate it for potential opportunities within the organization.';
+        body += 'We will keep your information on file, including any resume submitted, for one year.  During that time our recruiters will regularly search our pool of resumes for potential matches ';
+        body += 'within our open positions.  You may be contacted by one of our recruiters during the next year.  There is no need to respond to this email.';
+        body += '</p><p>Once again, we thank you for your submission and interest.</p>';
+        body += 'Best Regards,</p><p>Recruiting Dept., Universal Containers</p></p></body></html>';
+    	
+    	return body;	
     }
 }
