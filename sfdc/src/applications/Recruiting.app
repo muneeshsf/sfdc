@@ -21,4 +21,5 @@
     <tab>Position_Programming_Language__c</tab>
     <tab>Employee_Referral</tab>
     <tab>Error_Log__c</tab>
+    <tab>Search_Config__c</tab>
 </CustomApplication>

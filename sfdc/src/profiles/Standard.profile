@@ -6,7 +6,15 @@
         <visible>true</visible>
     </applicationVisibilities>
     <classAccesses>
+        <apexClass>CandidateEmailHandler</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>CandidateKeyWebService</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>DynamicSearch</apexClass>
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
@@ -22,11 +30,23 @@
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>Row</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>SubscriptionsClass</apexClass>
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>ValidateAddress</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>ValidateAddressSOAP</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>ValidateAddressesREST</apexClass>
         <enabled>false</enabled>
     </classAccesses>
     <fieldPermissions>
@@ -1561,6 +1581,21 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Search_Config__c.Active__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Search_Config__c.Fields__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Search_Config__c.Object_Name__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Solution.IsPublished</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1733,6 +1768,9 @@
         <layout>Salary__c-Salary Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
+        <layout>Search_Config__c-Search Config Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
         <layout>Solution-Solution Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
@@ -1853,6 +1891,10 @@
         <viewAllRecords>false</viewAllRecords>
     </objectPermissions>
     <pageAccesses>
+        <apexPage>CandidateTabDynamic</apexPage>
+        <enabled>false</enabled>
+    </pageAccesses>
+    <pageAccesses>
         <apexPage>EmployeeReferral</apexPage>
         <enabled>false</enabled>
     </pageAccesses>
@@ -1931,6 +1973,10 @@
     </tabVisibilities>
     <tabVisibilities>
         <tab>Review__c</tab>
+        <visibility>DefaultOn</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>Search_Config__c</tab>
         <visibility>DefaultOn</visibility>
     </tabVisibilities>
     <tabVisibilities>
