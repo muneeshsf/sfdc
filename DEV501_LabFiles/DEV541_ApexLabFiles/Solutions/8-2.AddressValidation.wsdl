@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions targetNamespace="http://SOAP.webservices.cdev.salesforce.com/" name="ValidateAddressesService" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://SOAP.webservices.cdev.salesforce.com/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.xmlsoap.org/wsdl/">
+	<types>
+		<xs:schema version="1.0" targetNamespace="http://SOAP.webservices.cdev.salesforce.com/" xmlns:tns="http://SOAP.webservices.cdev.salesforce.com/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+			<xs:element name="ValidateAddresses" type="tns:ValidateAddresses"/>
+			<xs:element name="ValidateAddressesResponse" type="tns:ValidateAddressesResponse"/>
+			<xs:element name="addressSOAP" type="tns:addressSOAP"/>
+			<xs:element name="validationResultSOAP" type="tns:validationResultSOAP"/>
+			<xs:complexType name="ValidateAddresses">
+				<xs:sequence>
+					<xs:element name="Address" type="tns:addressSOAP" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="addressSOAP">
+				<xs:sequence>
+					<xs:element name="city" type="xs:string" minOccurs="0"/>
+					<xs:element name="country" type="xs:string" minOccurs="0"/>
+					<xs:element name="id" type="xs:string" minOccurs="0"/>
+					<xs:element name="line1" type="xs:string" minOccurs="0"/>
+					<xs:element name="line2" type="xs:string" minOccurs="0"/>
+					<xs:element name="state" type="xs:string" minOccurs="0"/>
+					<xs:element name="zipCode" type="xs:string" minOccurs="0"/>
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="ValidateAddressesResponse">
+				<xs:sequence>
+					<xs:element name="return" type="tns:validationResultSOAP" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="validationResultSOAP">
+				<xs:sequence>
+					<xs:element name="differences" type="tns:difference" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="isValid" type="xs:boolean" minOccurs="0"/>
+					<xs:element name="testAddress" type="tns:addressSOAP" minOccurs="0"/>
+					<xs:element name="validAddress" type="tns:addressSOAP" minOccurs="0"/>
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="difference">
+				<xs:sequence>
+					<xs:element name="expecting" type="xs:string" minOccurs="0"/>
+					<xs:element name="fieldName" type="xs:string" minOccurs="0"/>
+					<xs:element name="received" type="xs:string" minOccurs="0"/>
+				</xs:sequence>
+			</xs:complexType>
+		</xs:schema>
+	</types>
+	<message name="ValidateAddresses">
+		<part name="parameters" element="tns:ValidateAddresses"/>
+	</message>
+	<message name="ValidateAddressesResponse">
+		<part name="parameters" element="tns:ValidateAddressesResponse"/>
+	</message>
+	<portType name="ValidateAddresses">
+		<operation name="ValidateAddresses">
+			<input message="tns:ValidateAddresses"/>
+			<output message="tns:ValidateAddressesResponse"/>
+		</operation>
+	</portType>
+	<binding name="ValidateAddressesPortBinding" type="tns:ValidateAddresses">
+		<soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+		<operation name="ValidateAddresses">
+			<soap:operation soapAction=""/>
+			<input>
+				<soap:body use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+			</output>
+		</operation>
+	</binding>
+	<service name="ValidateAddressesService">
+		<port name="ValidateAddressesPort" binding="tns:ValidateAddressesPortBinding">
+			<soap:address location="http://trg-mock-address-validator.herokuapp.com:80/soap/validateAddresses"/>
+		</port>
+	</service>
+</definitions>

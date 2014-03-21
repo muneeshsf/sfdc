@@ -1,0 +1,60 @@
+public class ValidateAddressesREST {
+    public class Address {
+        public String id;
+        public String line1;
+        public String line2;
+        public String city;
+        public String state;
+        public String country;
+        public String zipCode;
+    }
+    
+    public class Result {
+        public Boolean isValid;
+        public List<resultDifference> differences;
+        public Address testAddress;
+        public Address validAddress;
+    }
+    
+    public class ResultDifference {
+        public String expecting;
+        public String fieldName;
+        public String received;
+    }
+    
+    public List<Result> ValidateAddresses(List<ValidateAddressesREST.Address> listAddress) {
+        List<Result> output = null;
+        HTTP h = new HTTP(); 
+        String endpoint = 'http://trg-mock-address-validator.herokuapp.com/rest/validateMultipleAddress';
+
+		//TODO: Create an HTTPRequest "req" using the default constructor
+        HTTPRequest req = new HTTPRequest();
+		//TODO: Set the variable "endpoint" as the endpoint for the HTTPRequest variable "req"
+        req.setEndpoint(endpoint);
+        //TODO: Set the HTTPRequest's request method to "POST"
+		req.setMethod('POST');
+		//TODO: Set the header key value string "Accept" to the string "application/json" for the HTTPRequest
+        req.setHeader('Accept', 'application/json');
+        //TODO: Set the header key value string "Content-Type" to the string "application/json" for the HTTPRequest
+		req.setHeader('Content-Type', 'application/json');
+        //TODO: Set the body of the request to the serialized list of addresses
+		req.setBody(JSON.serialize(listAddress));
+        System.debug('Request: ' + req.getBody());
+        //TODO: Send the request and capture the results in an HTTPResponse variable called "resp"
+		HTTPResponse resp = h.send(req);
+        
+        if (resp.getStatusCode() == 200) { // 200 is the "good" status code
+            System.debug('Response: ' + resp.getBody());
+            output = (List<Result>) JSON.deserialize(resp.getBody(), List<Result>.class);
+        } else {
+            // Handle HTTP Error
+            Error_Log__c log = new Error_Log__c();
+            log.trace__c = '';
+            log.trace__c += 'Error: ' + resp.getStatusCode() + ' while connecting to: ' + endpoint + '\r\n';
+            log.trace__c += resp.getStatus() + '\r\n';
+            log.trace__c += resp.getBody() + '\r\n';
+            insert log;
+        }
+        return output;
+    }
+}
