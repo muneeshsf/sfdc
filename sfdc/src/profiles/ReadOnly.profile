@@ -26,7 +26,15 @@
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>PositionNewEditOverrideExtension</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>PositionSharingClass</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>ReviewAltPositionExtension</apexClass>
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
@@ -2022,6 +2030,14 @@
     </pageAccesses>
     <pageAccesses>
         <apexPage>EmployeeReferral</apexPage>
+        <enabled>false</enabled>
+    </pageAccesses>
+    <pageAccesses>
+        <apexPage>PositionNewEditOverride</apexPage>
+        <enabled>false</enabled>
+    </pageAccesses>
+    <pageAccesses>
+        <apexPage>ReviewAltPosition</apexPage>
         <enabled>false</enabled>
     </pageAccesses>
     <recordTypeVisibilities>
