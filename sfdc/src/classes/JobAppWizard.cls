@@ -123,6 +123,7 @@ public class JobAppWizard {
     // TODO: Create a method called "newCandidate" that resets the candidateId to null so that it inserts the candidate information when ultimately saved
 	public void newCandidate() {
 		CandidateId = null;
+		Candidate = null;
 	}
          
         public PageReference save() {
