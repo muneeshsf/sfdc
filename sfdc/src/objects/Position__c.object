@@ -1597,4 +1597,23 @@
         <errorDisplayField>Duration__c</errorDisplayField>
         <errorMessage>Temporary positions require a value for Duration between 1 and 365 days.</errorMessage>
     </validationRules>
+    <webLinks>
+        <fullName>Outstanding_Reviews</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <hasMenubar>false</hasMenubar>
+        <hasScrollbars>true</hasScrollbars>
+        <hasToolbar>false</hasToolbar>
+        <height>600</height>
+        <isResizable>true</isResizable>
+        <linkType>url</linkType>
+        <masterLabel>Outstanding Reviews</masterLabel>
+        <openType>newWindow</openType>
+        <position>none</position>
+        <protected>false</protected>
+        <showsLocation>false</showsLocation>
+        <showsStatus>false</showsStatus>
+        <url>/apex/OutstandingReviews?id={!Position__c.Id}</url>
+    </webLinks>
 </CustomObject>

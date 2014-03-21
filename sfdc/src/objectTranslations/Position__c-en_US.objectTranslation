@@ -388,6 +388,10 @@
             <section>Compensation</section>
         </sections>
         <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
             <label><!-- Description --></label>
             <section>Description</section>
         </sections>
@@ -441,4 +445,8 @@
         <errorMessage><!-- Temporary positions require a value for Duration between 1 and 365 days. --></errorMessage>
         <name>Temp_Position_Validation</name>
     </validationRules>
+    <webLinks>
+        <label><!-- Outstanding_Reviews --></label>
+        <name>Outstanding_Reviews</name>
+    </webLinks>
 </CustomObjectTranslation>

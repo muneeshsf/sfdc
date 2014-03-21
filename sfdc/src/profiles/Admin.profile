@@ -22,6 +22,14 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>MyOutstandingReview</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>OutstandingReviews</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>PositionAnnouncementTriggerTestClass</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -2052,6 +2060,10 @@
     </pageAccesses>
     <pageAccesses>
         <apexPage>EmployeeReferral</apexPage>
+        <enabled>true</enabled>
+    </pageAccesses>
+    <pageAccesses>
+        <apexPage>OutstandingReviews</apexPage>
         <enabled>true</enabled>
     </pageAccesses>
     <pageAccesses>
