@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>Notify_GMS_AAA_Skip</name>
+        <label>Account.Notify_GMS_AAA_Skip</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <actionName>Account.Notify_GMS_AAA_Skip</actionName>
+        <actionType>emailAlert</actionType>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>SObjectRowId</name>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputParameters>
+        <nameSegment>Account.Notify_GMS_AAA_Skip</nameSegment>
+    </actionCalls>
+    <apiVersion>58.0</apiVersion>
+    <description>Migrated from the: AAA Skip Reason workflow rule
+Workflow rule description: Notify GMS Team when an account is flagged with an AAA Skip Reason.
+T62897093: Bypass flows&quot;</description>
+    <label>AAA Skip Reason</label>
+    <migratedFromWorkflowRuleName>AAA Skip Reason</migratedFromWorkflowRuleName>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Notify_GMS_AAA_Skip</targetReference>
+        </connector>
+        <doesRequireRecordChangedToMeetCriteria>true</doesRequireRecordChangedToMeetCriteria>
+        <filterFormula>AND(NOT({!$Setup.FB_Trigger_Control__c.Shall_Skip_Account_Flows__c}), NOT(ISBLANK(TEXT({!$Record.AAA_Skip_Reason__c}))))</filterFormula>
+        <object>Account</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>
