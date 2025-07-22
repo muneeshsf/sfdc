@@ -1,0 +1,50 @@
+SELECT ParentId, SObjectType, PermissionsRead,Parent.name
+FROM ObjectPermissions
+WHERE SObjectType = 'Product2'  
+order by Parent.name
+
+SELECT Label, (SELECT SObjectType, Field, PermissionsRead, PermissionsEdit FROM FieldPerms) FROM PermissionSet WHERE Name in 
+(SELECT Parent.name FROM ObjectPermissions WHERE SObjectType = 'Product2'  and PermissionsRead=true)
+
+SELECT Parent.name,Parent.IsOwnedByProfile FROM ObjectPermissions WHERE SObjectType = 'Product2'  and 
+PermissionsRead=true and Parent.IsOwnedByProfile=false
+
+
+Field PermissionsEdit
+
+
+Object Permissions:
+
+Select Parent.Name, SObjectType, PermissionsCreate, 
+PermissionsRead, PermissionsEdit, PermissionsDelete, 
+PermissionsViewAllRecords, PermissionsModifyAllRecords
+From ObjectPermissions Where Parent.IsOwnedByProfile = false
+Order By Parent.Name, SObjectType
+
+Field Permissions:
+
+Select Parent.Name, SobjectType, Field, 
+PermissionsRead, PermissionsEdit
+From FieldPermissions
+Where Parent.IsOwnedByProfile = false
+Order By Parent.Name, SobjectType, Field
+=== Good One  ===
+Select Parent.Name, SobjectType, Field, 
+PermissionsRead, PermissionsEdit
+From FieldPermissions
+Where Parent.IsOwnedByProfile = false and SObjectType = 'Product2' and PermissionsRead=True and PermissionsEdit=false
+and field='Product2.Type__c'
+Order By Parent.Name, SobjectType, Field
+
+
+Select Parent.Name, SobjectType, Field, 
+PermissionsRead, PermissionsEdit
+From FieldPermissions
+Where Parent.IsOwnedByProfile = false and Parent.Name='ChatAndAlertsObjectAccess'
+Order By Parent.Name, SobjectType, Field
+
+Select Parent.Name, SobjectType, Field, 
+PermissionsRead, PermissionsEdit
+From FieldPermissions
+Where Parent.IsOwnedByProfile = false and Parent.Name='ARVR_Ship_Request'
+Order By Parent.Name, SobjectType, Field

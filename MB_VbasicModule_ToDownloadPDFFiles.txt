@@ -1,0 +1,49 @@
+ 
+   Sub DownloadFilesFromSalesforce()
+    Dim http As Object
+    Set http = CreateObject("MSXML2.XMLHTTP")
+    Dim url As String
+    Dim filePath As String
+    Dim accessToken As String
+    Dim instanceUrl As String
+    
+    ' Set Salesforce instance URL and access token
+    instanceUrl = "https://fb.my.salesforce.com"
+      accessToken = "00DA0000000K9kF!AQYAQLhZKeyUWcmP4oEhCtYxIww7MoM0OhP0_XbBSGtlTSJV6Y.mTnSyT3lff05PyKLoej.4j97sbU0tFw.RxQsLhSqB7h0s"
+    
+    ' Set file path
+    filePath = "C:\Muneesh\SFDXSetup\MBMeta\PDFExtract\"
+    
+    ' Loop through content version IDs
+    Dim contentVersionId As String
+    Dim fileTitle As String
+    For Each cell In Range("A1:A437")
+        contentVersionId = cell.Value
+        fileTitle = cell.Offset(0, 1).Value ' Get title from column B
+        
+        ' Construct URL
+        url = instanceUrl & "/services/data/v64.0/sobjects/ContentVersion/" & contentVersionId & "/VersionData"
+        
+        ' Send HTTP request
+        http.Open "GET", url, False
+        http.setRequestHeader "Authorization", "Bearer " & accessToken
+        http.send
+        
+        ' Save file
+        If http.Status = 200 Then
+            Dim adoStream As Object
+            Set adoStream = CreateObject("ADODB.Stream")
+            adoStream.Open
+            adoStream.Type = 1
+            adoStream.Write http.responseBody
+            adoStream.SaveToFile filePath & fileTitle & "_" & contentVersionId & ".pdf", 2 ' adSaveCreateOverWrite
+            adoStream.Close
+            Set adoStream = Nothing
+        Else
+            MsgBox "Error downloading file: " & http.Status & " - " & http.StatusText
+            Exit Sub
+        End If
+    Next cell
+    
+    Set http = Nothing
+End Sub

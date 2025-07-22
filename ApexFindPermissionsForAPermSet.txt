@@ -1,0 +1,109 @@
+// Define the permission set ID
+Id permissionSetId = '0PS12000000HPtdGAG'; // Replace with the actual permission set ID
+
+// Query the PermissionSet object
+Map<String, Schema.SObjectField> permissionSetFields = Schema.SObjectType.PermissionSet.fields.getMap();
+System.debug('PS q : '+permissionSetFields.keySet());
+
+String query = 'SELECT ';
+for (String fieldName : permissionSetFields.keySet()) {
+   // System.debug('fields : '+fieldName);
+    if (fieldName == 'Id' || fieldName == 'Name' || fieldName == 'Label' || fieldName.startsWith('permissions')) {
+        query += fieldName + ', ';
+    }
+}
+query = query.removeEnd(', ');
+query += ' FROM PermissionSet WHERE Id = :permissionSetId';
+System.debug('PS q : '+query);
+PermissionSet ps = Database.query(query);
+System.debug('PS q : '+ps);
+
+// Query the ObjectPermissions
+List<ObjectPermissions> objectPermissionsList = [
+    SELECT 
+        Id, 
+        SobjectType, 
+        ParentId, 
+        PermissionsRead, 
+        PermissionsCreate, 
+        PermissionsEdit, 
+        PermissionsDelete, 
+        PermissionsViewAllRecords, 
+        PermissionsModifyAllRecords 
+    FROM ObjectPermissions 
+    WHERE ParentId = :permissionSetId
+];
+
+// Query the CustomPermissions
+List<SetupEntityAccess> setupEntityAccessList = [
+    SELECT SetupEntityId 
+    FROM SetupEntityAccess 
+    WHERE ParentId = :permissionSetId
+];
+
+Set<Id> entityIds = new Set<Id>();
+for (SetupEntityAccess sea : setupEntityAccessList) {
+    entityIds.add(sea.SetupEntityId);
+}
+
+List<CustomPermission> customPermissionsList = [
+    SELECT Id, DeveloperName 
+    FROM CustomPermission 
+    WHERE Id IN :entityIds
+];
+
+// Create CSV content
+String csvContent = 'Permission Set Details\n';
+csvContent += 'Name,' + ps.get('Name') + '\n';
+csvContent += 'Label,' + ps.get('Label') + '\n';
+
+
+//Map<String, Schema.SObjectField> permissionSetFields = Schema.SObjectType.PermissionSet.fields.getMap();
+// Add permission fields
+for (String fieldName : permissionSetFields.keySet()) {
+    if (fieldName.startsWith('permissions')) {
+        csvContent += fieldName + ',' + ps.get(fieldName) + '\n';
+    }
+}
+//System.debug('PS Fields : '+csvContent);
+
+csvContent += '\nObject Permissions\n';
+csvContent += 'Object,Read,Create,Edit,Delete,ViewAllRecords,ModifyAllRecords\n';
+for (ObjectPermissions op : objectPermissionsList) {
+    csvContent += 
+        '"' + op.SobjectType + '",' + 
+        op.PermissionsRead + ',' + 
+        op.PermissionsCreate + ',' + 
+        op.PermissionsEdit + ',' + 
+        op.PermissionsDelete + ',' + 
+        op.PermissionsViewAllRecords + ',' + 
+        op.PermissionsModifyAllRecords + '\n';
+}
+
+csvContent += '\nCustom Permissions\n';
+csvContent += 'Name\n';
+for (CustomPermission cp : customPermissionsList) {
+    csvContent += '"' + cp.DeveloperName + '"\n';
+}
+
+// Get current user
+User currentUser = [SELECT Id, Email FROM User WHERE Id = :UserInfo.getUserId()];
+
+// Send email with CSV attachment
+Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+mail.setSubject('Permission Set Details');
+mail.setPlainTextBody('Please find the attached CSV report.');
+mail.setToAddresses(new String[] { currentUser.Email });
+
+Messaging.EmailFileAttachment attachment = new Messaging.EmailFileAttachment();
+attachment.setContentType('text/csv');
+attachment.setFileName('PermissionSetDetails.csv');
+attachment.setBody(Blob.valueOf(csvContent));
+mail.setFileAttachments(new Messaging.EmailFileAttachment[] { attachment });
+
+try {
+    Messaging.sendEmail(new Messaging.SingleEmailMessage[] { mail });
+    System.debug('Email sent successfully.');
+} catch (Exception e) {
+    System.debug('Error sending email: ' + e.getMessage());
+}
