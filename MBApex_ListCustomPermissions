@@ -1,0 +1,61 @@
+// ✅ Run this directly in Developer Console > Execute Anonymous Window
+List<String> rows = new List<String>();
+rows.add('Type,Object Name,Included Item,Additional Info');
+
+// PSG and Permission Sets
+for (PermissionSetGroupComponent c : [SELECT PermissionSetGroup.Label, PermissionSet.Label FROM PermissionSetGroupComponent]) {
+    rows.add('PSG,' + c.PermissionSetGroup.Label + ',' + c.PermissionSet.Label + ',Included');
+}
+
+// Muted PSGs
+for (MutingPermissionSet mps : [SELECT Label, Name FROM MutingPermissionSet]) {
+    rows.add('PSG Muted,' + mps.Label + ',(Muted Set),' + mps.Name);
+}
+
+// Custom Permissions
+Map<Id, CustomPermission> cpMap = new Map<Id, CustomPermission>([
+    SELECT Id, DeveloperName, MasterLabel FROM CustomPermission
+]);
+for (CustomPermission cp : cpMap.values()) {
+    rows.add('CustomPermission,' + cp.MasterLabel + ',(Internal Name),' + cp.DeveloperName);
+}
+
+// Custom Permission Assignments
+for (SetupEntityAccess access : [
+    SELECT Parent.Label, Parent.Name, SetupEntityId 
+    FROM SetupEntityAccess WHERE SetupEntityType = 'CustomPermission']
+) {
+    CustomPermission cp = cpMap.get(access.SetupEntityId);
+    rows.add('CustomPermissionAssignment,' + (cp != null ? cp.MasterLabel : access.SetupEntityId) + ',' + access.Parent.Label + ',' + access.Parent.Name);
+}
+
+// Object-Level CRUD
+for (ObjectPermissions op : [
+    SELECT Parent.Label, SObjectType, PermissionsRead, PermissionsCreate, PermissionsEdit, PermissionsDelete, PermissionsViewAll, PermissionsModifyAll 
+    FROM ObjectPermissions
+]) {
+    rows.add('ObjectPermission,' + op.Parent.Label + ',' + op.SObjectType + ',Read:' + op.PermissionsRead + ' Create:' + op.PermissionsCreate +
+             ' Edit:' + op.PermissionsEdit + ' Delete:' + op.PermissionsDelete + ' ViewAll:' + op.PermissionsViewAll + ' ModifyAll:' + op.PermissionsModifyAll);
+}
+
+// Field-Level Permissions
+for (FieldPermissions fp : [
+    SELECT Parent.Label, SObjectType, Field, PermissionsRead, PermissionsEdit 
+    FROM FieldPermissions
+]) {
+    rows.add('FieldPermission,' + fp.Parent.Label + ',' + fp.Field + ',Read:' + fp.PermissionsRead + ' Edit:' + fp.PermissionsEdit);
+}
+
+// Send email with CSV
+Messaging.EmailFileAttachment attachment = new Messaging.EmailFileAttachment();
+attachment.setFileName('Full_Permission_Audit.csv');
+attachment.setBody(Blob.valueOf(String.join(rows, '\n')));
+attachment.setContentType('text/csv');
+
+Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+mail.setToAddresses(new String[] { UserInfo.getUserEmail() });
+mail.setSubject('Salesforce Full Permission Audit Report');
+mail.setPlainTextBody('Attached is the CSV audit of PSGs, Custom Permissions, Object CRUD, and FLS.');
+mail.setFileAttachments(new Messaging.EmailFileAttachment[] { attachment });
+
+Messaging.sendEmail(new Messaging.SingleEmailMessage[] { mail });
