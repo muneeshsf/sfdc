@@ -1,0 +1,48 @@
+String targetObject = 'Account'; // Change to your object
+Id targetRecordId = '001XXXXXXXXXXXX'; // Change to your record ID
+
+// 1. Get current user
+User currentUser = [SELECT Id, Email, RoleId FROM User WHERE Id = :UserInfo.getUserId()];
+String emailBody = '🔍 Record Access Analysis for ' + targetObject + ' record ' + targetRecordId + '\n\n';
+
+try {
+    // 2. Get record
+    SObject sobj = Database.query('SELECT Id, OwnerId FROM ' + targetObject + ' WHERE Id = :targetRecordId LIMIT 1');
+    Id ownerId = (Id)sobj.get('OwnerId');
+    Boolean isOwner = ownerId == currentUser.Id;
+    emailBody += '🔸 User is owner: ' + isOwner + '\n';
+
+    // 3. Check object-level access (CRUD)
+    Schema.DescribeSObjectResult describeResult = Schema.getGlobalDescribe().get(targetObject).getDescribe();
+    Boolean hasReadAccess = describeResult.isAccessible();
+    emailBody += '🔸 User has Read access to object: ' + hasReadAccess + '\n';
+
+    // 4. Check sharing (if available)
+    Boolean sharingFound = false;
+    List<String> rowCauses = new List<String>();
+    try {
+        String shareObject = targetObject + 'Share';
+        String shareQuery = 'SELECT RowCause, AccessLevel FROM ' + shareObject + ' WHERE ParentId = :targetRecordId AND UserOrGroupId = :currentUser.Id';
+        List<SObject> shares = Database.query(shareQuery);
+        sharingFound = !shares.isEmpty();
+        for (SObject s : shares) {
+            rowCauses.add((String)s.get('RowCause'));
+        }
+    } catch (Exception e) {
+        rowCauses.add('N/A - No share object for ' + targetObject);
+    }
+    emailBody += '🔸 Sharing records found: ' + sharingFound + '\n';
+    emailBody += '🔸 Sharing RowCauses: ' + String.join(rowCauses, ', ') + '\n';
+
+    // 5. Compose and send email
+    Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+    mail.setToAddresses(new String[] { currentUser.Email });
+    mail.setSubject('Salesforce Record Access Analysis Result');
+    mail.setPlainTextBody(emailBody);
+    Messaging.sendEmail(new Messaging.SingleEmailMessage[] { mail });
+
+    System.debug('✅ Email sent to ' + currentUser.Email + ' with record access details.');
+
+} catch (Exception ex) {
+    System.debug('❌ Error: ' + ex.getMessage());
+}
